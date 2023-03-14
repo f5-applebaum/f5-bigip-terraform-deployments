@@ -5,9 +5,11 @@
 
 # Example Deployment with BIG-IP Standalone(s) and Application(s) (using modules)
 
-This solution deploys N BIG-IPs and N example Application VMs using the modules contained in this project. NOTE, this solution uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+This solution deploys N BIG-IPs and N example Application VMs using the modules contained in this project. The BIG-IP module leverages [cloud-init](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/index.html). 
 
-This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan to facilitate testing deploy times and traffic vs. a more realistic pattern of seperating Day 0 and Day 1-N. See the bigip-standalone plan without the example application VMs and AS3 deployment for example of Day 0 deployment.
+*NOTE:* This solution also uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+
+This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan to facilitate testing deploy times and traffic vs. a more realistic pattern of seperating Day 0 and Day 1-N. See the bigip-standalone plan(s) without the example application VMs and virtual service (AS3) deployments for example of strictly Day 0 deployment.
 
 ### Features
   * Ability to deploy from a VM Template on Datastore or Content Library
@@ -20,14 +22,15 @@ This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan
 
 * SSH Public Key (common cloud standard)
 * An F5 Networks BYOL (Bring Your Own License) registration key available.
-* Access to the Internet from BIG-IP's 1st NIC (Management)
 * [mkisofs](https://linux.die.net/man/8/mkisofs) - or similar util to make a cloud-init iso for BIG-IP. 
   * See [BIG-IP Cloud-init Support](https://clouddocs.f5.com/cloud/public/v1/shared/cloudinit.html#deploy-with-cloud-init) for more information.
 
 ### VMware Env:
 
 * 3 Networks ( Port Groups )
-    * DHCP Server on the 1st Network (Management)
+    * 1st Network = BIG-IP's Management
+       * Access to the Internet
+       * DHCP enabled 
     * Uses Static IPs on External and Internal Networks.
     * The example onboarding payload in this plan has 2 dataplane networks hardcoded. If changing the # of networks, you must customize /template/do-w-3-nics.json.
 * VM Templates in vSphere (hosted on a Datastore or VMware Content Library).
@@ -116,7 +119,7 @@ This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan
 | <a name="input_bigip_self_ips_internal"></a> [bigip\_self\_ips\_internal](#input\_bigip\_self\_ips\_internal) | List of BIG-IP Internal Self-Ips in A.B.C.D/XX format. One per instance. | `list(string)` | <pre>[<br>  "192.168.2.51/24"<br>]</pre> | no |
 | <a name="input_bigip_default_gateway"></a> [bigip\_default\_gateway](#input\_bigip\_default\_gateway) | BIG-IP Default Gateway | `string` | `"192.168.1.1"` | no |
 | <a name="input_bigip_license_keys"></a> [bigip\_license\_keys](#input\_bigip\_license\_keys) | REQUIRED: BIG-IP license registration keys. One per instance. | `list(string)` | n/a | yes |
-| <a name="input_check_bigip_ready"></a> [check\_bigip\_ready](#input\_check\_bigip\_ready) | Run Check Onboard Complete Script and external onboarding provisioners. BIG-IP addresses must be reachable from terraform client. | `bool` | `false` | no |
+| <a name="input_check_bigip_ready"></a> [check\_bigip\_ready](#input\_check\_bigip\_ready) | Run Check Onboard Complete Script and external Onboarding provisioners. BIG-IP addresses must be reachable from terraform client. | `bool` | `true` | no |
 | <a name="input_check_bigip_login_delay"></a> [check\_bigip\_login\_delay](#input\_check\_bigip\_login\_delay) | The number of seconds/minutes of delay to login. | `string` | `"540s"` | no |
 | <a name="input_check_bigip_timeout"></a> [check\_bigip\_timeout](#input\_check\_bigip\_timeout) | The number of seconds/minutes to wait to confirm onboarding was successful. | `string` | `"900s"` | no |
 | <a name="input_check_bigip_ssh_private_key_file"></a> [check\_bigip\_ssh\_private\_key\_file](#input\_check\_bigip\_ssh\_private\_key\_file) | Pass local file location of Private Key. ex. /Users/you/.ssh/private-key.pem | `string` | `null` | no |

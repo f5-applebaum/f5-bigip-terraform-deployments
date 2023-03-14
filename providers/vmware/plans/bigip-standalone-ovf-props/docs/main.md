@@ -1,8 +1,8 @@
 # Example BIG-IP Standalone Deployment using BIG-IP Terraform module.
 
-Deploys VMWare virtual machine(s) from a BIG-IP VM Template using the BIG-IP module contained in this project. The BIG-IP module uses [OVF Properties](https://clouddocs.f5.com/cloud/public/v1/vmware/vmware_setup.html#set-the-big-ip-ve-management-ip-address-and-passwords).
+Deploys VMWare virtual machine(s) from a BIG-IP VM Template using the BIG-IP module contained in this project. The BIG-IP module leverages [OVF Properties](https://clouddocs.f5.com/cloud/public/v1/vmware/vmware_setup.html#set-the-big-ip-ve-management-ip-address-and-passwords).
 
-NOTE: this solution uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+*NOTE:* this solution also uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
 
 ### Features
   * Ability to deploy Template from a Datastore or VMware Content Library.

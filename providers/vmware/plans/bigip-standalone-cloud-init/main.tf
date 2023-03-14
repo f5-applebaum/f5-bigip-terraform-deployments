@@ -28,6 +28,10 @@ module "bigip" {
 
 
 # Could onboard / do Config Mgmt via Ansible provisioners as well
+
+# Other Options are:
+# Terraform: https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_do
+# Ansible: https://clouddocs.f5.com/products/orchestration/ansible/devel/f5_bigip/modules_2_0/bigip_do_deploy_module.html#bigip-do-deploy-module-2
 resource "local_file" "onboard" {
   count    = local.bigip_instance_count
   filename = "declarations/do-rendered-${count.index + 1}.json"

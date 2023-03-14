@@ -4,9 +4,9 @@
 
 # Example BIG-IP Standalone Deployment using BIG-IP Terraform module.
 
-Deploys VMware virtual machine(s) from a BIG-IP VM Template using the BIG-IP module contained in this project.
+Deploys VMware virtual machine(s) from a BIG-IP VM Template using the BIG-IP module contained in this project. The BIG-IP module leverages [cloud-init](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/index.html).
 
-NOTE: this solution uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+*NOTE:* this solution also uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
 
 ### Features
   * Ability to deploy from a VM Template on a Datastore or Content Library
@@ -86,8 +86,8 @@ NOTE: this solution uses count at the module level to deploy N number of instanc
 
 | Name | Version |
 |------|---------|
-| <a name="provider_local"></a> [local](#provider\_local) | 2.3.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
+| <a name="provider_null"></a> [null](#provider\_null) | n/a |
 
 ## Inputs
 

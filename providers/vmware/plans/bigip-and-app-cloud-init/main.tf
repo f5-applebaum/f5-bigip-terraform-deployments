@@ -13,8 +13,6 @@ locals {
 }
 
 
-
-
 # Application
 
 module "application" {
@@ -67,6 +65,9 @@ module "bigip" {
 
 
 # Day .5 = Can onboard / do Config Mgmt via Ansible provisioners as well
+# Other Options are:
+# Terraform: https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_do
+# Ansible: https://clouddocs.f5.com/products/orchestration/ansible/devel/f5_bigip/modules_2_0/bigip_do_deploy_module.html#bigip-do-deploy-module-2
 resource "local_file" "onboard" {
   count    = local.bigip_instance_count
   filename = "declarations/do-rendered-${count.index + 1}.json"
@@ -114,8 +115,12 @@ resource "null_resource" "declare_onboard" {
 
 }
 
+# Day 1-N Should really be seperated out but included here for simple full stack
 
-# Day 1-N Should really be seperated out but included here for full stack
+# Options are: 
+# Terraform: https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_as3
+# Ansible: https://clouddocs.f5.com/products/orchestration/ansible/devel/f5_bigip/modules_2_0/bigip_as3_deploy_module.html#bigip-as3-deploy-module-2
+
 resource "local_file" "as3" {
   count    = local.bigip_instance_count
   filename = "declarations/as3-rendered-${count.index + 1}.json"
@@ -137,7 +142,6 @@ resource "null_resource" "declare_as3" {
     password = local.bigip_admin_password
     host     = var.check_bigip_hosts[count.index] != null ? var.check_bigip_hosts[count.index] : module.bigip[count.index].*.default_ip_address[0]
     timeout  = var.check_bigip_timeout
-    # script_path = "/var/tmp/check_onboard_complete.sh"
   }
 
   provisioner "remote-exec" {

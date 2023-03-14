@@ -1,9 +1,11 @@
 
 # Example Deployment with BIG-IP Standalone(s) and Application(s) (using modules)
 
-This solution deploys N BIG-IPs and N example Application VMs using the modules contained in this project. NOTE, this solution uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+This solution deploys N BIG-IPs and N example Application VMs using the modules contained in this project. The BIG-IP module leverages [cloud-init](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/index.html). 
 
-This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan to facilitate testing deploy times and traffic vs. a more realistic pattern of seperating Day 0 and Day 1-N. See the bigip-standalone plan without the example application VMs and AS3 deployment for example of Day 0 deployment.
+*NOTE:* This solution also uses count at the module level to deploy N number of instances and hence leverages different variables then the modules themselves to facilitate deploying multiple instances (ex. hostname prefixes vs. hostnames, arrays of IPs vs. single IPs, etc).
+
+This solution deploys Day 0 (VM) and Day 1 (virtual service via AS3) in one plan to facilitate testing deploy times and traffic vs. a more realistic pattern of seperating Day 0 and Day 1-N. See the bigip-standalone plan(s) without the example application VMs and virtual service (AS3) deployments for example of strictly Day 0 deployment.
 
 ### Features
   * Ability to deploy from a VM Template on Datastore or Content Library

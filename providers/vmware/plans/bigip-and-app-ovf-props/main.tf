@@ -162,7 +162,6 @@ resource "null_resource" "declare_onboard" {
 
 }
 
-
 # Day 1-N Should really be seperated out but included here for simple full stack
 
 # Options are: 
@@ -190,7 +189,6 @@ resource "null_resource" "declare_as3" {
     password = local.check_bigip_password
     host     = var.check_bigip_hosts[count.index] != null ? var.check_bigip_hosts[count.index] : module.bigip[count.index].*.default_ip_address[0]
     timeout  = var.check_bigip_timeout
-    # script_path = "/var/tmp/check_onboard_complete.sh"
   }
 
   provisioner "remote-exec" {
