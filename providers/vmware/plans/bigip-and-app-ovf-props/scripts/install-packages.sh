@@ -1,0 +1,72 @@
+#!/bin/bash -x
+
+# Note that initial password should only be temporary as
+# the password will be cached by tfstate, in cloud-drive, and initially on the device
+# Not recommended for production.
+# Recommend changing password immediately 
+# For production, F5 also recommends customizing the Runtime-Init Config in startup-script.tpl 
+# to using Hashicorp Vault to fetch the secret/password
+# See https://github.com/F5Networks/f5-bigip-runtime-init#runtime_parameters
+
+
+# Wait for disk re-sizing to finisih before starting
+# ve.dir.resize: Successfully wrote the new partition table
+for i in {1..60}; do [[ -f "/var/log/ve.dir.resize.log.bak" ]] && grep -q boot_marker /var/log/ve.dir.resize.log.bak && break || sleep 1; done
+
+# Send output to log file and serial console
+mkdir -p  /var/log/cloud /config/cloud /var/lib/cloud /var/config/rest/downloads 
+LOG_FILE=/var/log/cloud/startup-script.log
+[[ ! -f $LOG_FILE ]] && touch $LOG_FILE || { echo "Run Only Once. Exiting"; exit; }
+npipe=/tmp/$$.tmp
+trap "rm -f $npipe" EXIT
+mknod $npipe p
+tee <$npipe -a $LOG_FILE /dev/ttyS0 &
+exec 1>&-
+exec 1>$npipe
+exec 2>&1
+
+echo "$(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Starting Custom Script"
+
+
+# Run Immediately Before MCPD starts
+/usr/bin/setdb provision.extramb 1000
+/usr/bin/setdb restjavad.useextramb true
+/usr/bin/setdb iapplxrpm.timeout 300 || true
+/usr/bin/setdb icrd.timeout 180 || true
+/usr/bin/setdb restjavad.timeout 180 || true
+/usr/bin/setdb restnoded.timeout 180 || true
+
+
+### write_files:
+# Download or Render BIG-IP Runtime Init Config
+# NOTE: When baked in, pre_onboard_enabled commands are able to run in time before MCPD starts 
+cat << 'EOF' > /config/cloud/runtime-init-conf.yaml
+extension_packages:
+  install_operations:
+    - extensionType: do
+      extensionVersion: 1.36.0
+      extensionHash: 6f94718afcbf7743b9c260ab341f33987d2d442ab1f5076410ebd557be7d2ff0
+    - extensionType: as3
+      extensionVersion: 3.43.0
+      extensionHash: 6e50f828292c3e9417136693b7fba232ca4c004187ae1499e83e39210b500e7a
+    - extensionType: ts
+      extensionVersion: 1.32.0
+      extensionHash: a6bf242728a5ba1b8b8f26b59897765567db7e0f0267ba9973f822be3ab387b6
+    - extensionType: fast
+      extensionVersion: 1.24.0
+      extensionHash: 7f1c8080b6712915d18caaf3410d8ed21c0454f53bfc8999f294bd958231b47f
+post_onboard_enabled: []
+EOF
+
+# Download
+package_url="https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.6.0/dist/f5-bigip-runtime-init-1.6.0-1.gz.run"
+for i in {1..30}; do
+    curl -fv --retry 1 --connect-timeout 5 -L "${package_url}" -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10
+done
+# Install
+bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- "--telemetry-params templateName:vmware-example"
+# Run
+f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml
+
+
+echo "$(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Finished Custom Script"

@@ -1,0 +1,5 @@
+extension_services:
+  service_operations:
+    - extensionType: as3
+      type: url
+      value: file:///tmp/declarations/as3-rendered.json

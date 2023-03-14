@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0.0",
+  "class": "Device",
+  "async": true,
+  "label": "BIG-IP VE Runtime Init Example",
+  "Common": {
+    "class": "Tenant",
+    "My_DbVariables": {
+      "class": "DbVariables",
+      "ui.advisory.enabled": true,
+      "ui.advisory.color": "blue",
+      "ui.advisory.text": "BIG-IP VE Runtime Init Example",
+      "config.allow.rfc3927": "enable"
+    },
+    "My_System": {
+      "class": "System",
+      "hostname": "${hostname}",
+      "cliInactivityTimeout": 1200,
+      "consoleInactivityTimeout": 1200,
+      "autoPhonehome": false
+    },
+    "My_Dns": {
+      "class": "DNS",
+      "nameServers": [
+        "8.8.8.8"
+      ]
+    },
+    "My_Ntp": {
+      "class": "NTP",
+      "servers": [
+        "pool.ntp.org"
+      ],
+      "timezone": "UTC"
+    },
+    "My_Provisioning": {
+      "class": "Provision",
+      "ltm": "nominal",
+      "asm": "nominal"
+    },
+    "${admin_username}": {
+      "class": "User",
+      "userType": "regular",
+      "partitionAccess": {
+        "all-partitions": {
+          "role": "admin"
+        }
+      },
+      "password": "${admin_password}",
+      "shell": "bash",
+      "keys": [
+        "${ssh_public_key}"
+      ]
+    },
+    "My_License": {
+      "class": "License",
+      "licenseType": "regKey",
+      "regKey": "${license_key}"
+    },
+    "default": {
+      "class": "Route",
+      "gw": "${default_gw}",
+      "mtu": 1500,
+      "network": "default"
+    },
+    "external": {
+      "class": "VLAN",
+      "interfaces": [
+        {
+          "name": "1.1",
+          "tagged": false
+        }
+      ],
+      "mtu": 1500,
+      "tag": 4094
+    },
+    "external-self": {
+      "class": "SelfIp",
+      "address": "${self_ip_external}",
+      "allowService": "none",
+      "trafficGroup": "traffic-group-local-only",
+      "vlan": "external"
+    },
+    "internal": {
+      "class": "VLAN",
+      "interfaces": [
+        {
+          "name": "1.2",
+          "tagged": false
+        }
+      ],
+      "mtu": 1500,
+      "tag": 4093
+    },
+    "internal-self": {
+      "class": "SelfIp",
+      "address": "${self_ip_internal}",
+      "allowService": "none",
+      "trafficGroup": "traffic-group-local-only",
+      "vlan": "internal"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+# Example VARs for deploying 2 BIG-IPs from Template on DataStore. 
+# To deploy from Content Library, uncomment vsphere_content_library variable below
+
+
+# Provider
+vsphere_user     = "administrator@vsphere.local.net"
+vsphere_password = "XXXXXXXXXXXXXXXXXX"
+vsphere_server   = "vsphere.local.net"
+
+# Vsphere ENV
+vsphere_datacenter    = "DC01"
+vsphere_host          = "vspherehost01.local.net"
+vsphere_resource_pool = "Clustername/Resources"
+vsphere_datastore     = "datastore1"
+
+# If Templates are on Content Lib
+# vsphere_content_library = "ContentLibrary1"
+
+
+# Global
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADXXXXXXXXXX"
+domain         = "local.net"
+
+# BIG-IP
+vsphere_virtual_machine = "BIGIP-16.1.3-0.0.12.ALL-vmware-Template"
+
+
+bigip_vm_name_prefix     = "bigip-dev"
+bigip_networks           = ["VM Network", "External-Network", "Internal-Network"]
+# Bug: If deploying from Content Library
+# bigip_networks_ovf_map = ["eth0", "eth1", "eth2"]
+
+# BIG-IP Config
+
+# Bootstrap credential seeding and packaging
+# Path to clooud init ISO on Datastore
+bigip_cloud_init_iso  = "CLOUD-INIT-ISOs/bigip-cloud-init.iso"
+
+# Declarative Onboarding
+
+# Must match what is hard coded in startup-script in cloud-init user-data iso (iso/openstack/latest/user-data)
+bigip_username = "admin"
+bigip_password = "iNitialSTROnGPaZZwrD"
+# The network addresses to assign during customization of cloned virtual machines, in A.B.C.D/XX format. 
+# This determines number of VMs to deploy. Use one per instance.
+# Static not supported at this time
+# null = Use DHCP for first NIC. 
+# use [null] for 1 instance
+# user [null,null] for 2 instances, 
+# etc.
+bigip_ipv4_network_addresses   = [null, null]
+bigip_self_ips_external        = ["192.168.1.61/24","192.168.1.62/24"]
+bigip_self_ips_internal        = ["192.168.2.61/24","192.168.2.62/24"]
+bigip_default_gateway          = "192.168.1.1"
+
+# One per instance
+bigip_license_keys        = ["HZGKE-SFYNV-UYAXZ-AOVFW-VNIDJPD","HZGKE-SFYNV-UYAXZ-AOVFW-VNIDJPJ"]
+
+# For Testing
+check_bigip_ready         = true
+# check_bigip_login_delay = "300s"
+# check_bigip_timeout     = "900s"
+# Must match instance count from bigip_ipv4_network_addresses 
+check_bigip_hosts         = [null,null]

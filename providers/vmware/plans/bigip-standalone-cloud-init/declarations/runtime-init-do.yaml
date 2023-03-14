@@ -1,0 +1,5 @@
+extension_services:
+  service_operations:
+    - extensionType: do
+      type: url
+      value: file:///tmp/declarations/do-rendered.json
