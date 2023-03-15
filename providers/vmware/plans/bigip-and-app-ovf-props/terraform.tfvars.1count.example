@@ -34,7 +34,7 @@ bigip_networks           = ["VM Network", "External-Network", "Internal-Network"
 
 # Passed via OVF Properties. 
 # WARNING: Visible in VMWare console so need to change immediately.
-bigip_username = "admin"
+bigip_admin_username = "admin"
 bigip_admin_password = "iNitialSTROnGPaZZwrD"
 bigip_root_password  = "iNitialSTROnGPaZZwrD"
 

@@ -79,4 +79,37 @@ resource "null_resource" "declare_onboard" {
 
 }
 
+# https://support.hashicorp.com/hc/en-us/articles/11119084989587-How-to-Terraform-Destroy-time-Provisioners
+# "Destroy-time provisioners and their connection configurations may only reference attributes
+# of the related resource, via 'self', 'count.index', or 'each.key'.
+# │ References to other resources during the destroy phase can cause dependency cycles 
+# and interact poorly with create_before_destroy."
+# https://stackoverflow.com/questions/64436987/invalid-reference-from-destroy-provisioner
+
+resource "null_resource" "revoke_license" {
+  count = local.bigip_instance_count
+
+  triggers = {
+    user     = var.check_bigip_username
+    password = var.check_bigip_password
+    host     = var.check_bigip_hosts[count.index] != null ? var.check_bigip_hosts[count.index] : module.bigip[count.index].*.default_ip_address[0]
+  }
+
+  connection {
+    type     = "ssh"
+    user     = self.triggers.user
+    password = self.triggers.password
+    host     = self.triggers.host
+  }
+
+  provisioner "remote-exec" {
+    when       = destroy
+    on_failure = continue
+    # inline     = ["tmsh revoke sys license"]
+    inline = ["curl -v -u admin: -H \"Content-Type: application/json\" -d '{\"command\":\"revoke\"}' -X POST http://localhost:8100/mgmt/tm/sys/license"]
+  }
+
+}
+
+
 
