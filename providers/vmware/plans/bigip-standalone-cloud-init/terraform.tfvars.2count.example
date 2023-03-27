@@ -41,6 +41,7 @@ bigip_cloud_init_iso  = "CLOUD-INIT-ISOs/bigip-cloud-init.iso"
 # Must match what is hard coded in startup-script in cloud-init user-data iso (iso/openstack/latest/user-data)
 bigip_username = "admin"
 bigip_password = "iNitialSTROnGPaZZwrD"
+
 # The network addresses to assign during customization of cloned virtual machines, in A.B.C.D/XX format. 
 # This determines number of VMs to deploy. Use one per instance.
 # Static not supported at this time

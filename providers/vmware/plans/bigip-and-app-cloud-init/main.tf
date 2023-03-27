@@ -6,6 +6,7 @@ module "utils" {
 locals {
   app_admin_password      = var.app_password != null ? var.app_password : module.utils.admin_password.result
   app_admin_password_hash = var.app_password != null ? bcrypt(var.app_password) : module.utils.admin_password.bcrypt_hash
+
   bigip_admin_password    = var.bigip_password != null ? var.bigip_password : module.utils.admin_password.result
 
   app_instance_count   = length(var.app_ipv4_network_addresses)
@@ -43,7 +44,7 @@ module "application" {
 }
 
 module "bigip" {
-  source                           = "../../modules/bigip-standalone"
+  source                           = "../../modules/bigip-standalone-cloud-init-from-vmware"
   count                            = local.bigip_instance_count
   vsphere_datacenter               = var.vsphere_datacenter
   vsphere_resource_pool            = var.vsphere_resource_pool
@@ -126,8 +127,8 @@ resource "null_resource" "revoke_license" {
   count = local.bigip_instance_count
 
   triggers = {
-    user     = var.check_bigip_username
-    password = var.check_bigip_password
+    user     = var.bigip_username
+    password = local.bigip_admin_password
     host     = var.check_bigip_hosts[count.index] != null ? var.check_bigip_hosts[count.index] : module.bigip[count.index].*.default_ip_address[0]
   }
 

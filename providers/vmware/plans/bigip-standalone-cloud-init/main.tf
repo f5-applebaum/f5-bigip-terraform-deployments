@@ -6,7 +6,7 @@ locals {
 # Set vm parameters
 
 module "bigip" {
-  source                           = "../../modules/bigip-standalone"
+  source                           = "../../modules/bigip-standalone-cloud-init-from-vmware"
   count                            = local.bigip_instance_count
   vsphere_datacenter               = var.vsphere_datacenter
   vsphere_resource_pool            = var.vsphere_resource_pool
@@ -90,8 +90,8 @@ resource "null_resource" "revoke_license" {
   count = local.bigip_instance_count
 
   triggers = {
-    user     = var.check_bigip_username
-    password = var.check_bigip_password
+    user     = var.bigip_username
+    password = var.bigip_password
     host     = var.check_bigip_hosts[count.index] != null ? var.check_bigip_hosts[count.index] : module.bigip[count.index].*.default_ip_address[0]
   }
 

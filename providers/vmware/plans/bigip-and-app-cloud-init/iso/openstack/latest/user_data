@@ -47,7 +47,7 @@ runtime_parameters:
     value: admin
   - name: ADMIN_PASS
     type: static
-    value: mYSTROnGPaZZwrD
+    value: iNitialSTROnGPaZZwrD
   - name: HOST_NAME
     type: static
     value: bigip.example.local

@@ -62,3 +62,6 @@ check_bigip_ready         = true
 # check_bigip_timeout     = "900s"
 # Must match instance count from bigip_ipv4_network_addresses 
 check_bigip_hosts         = [null,null]
+# Root is only user with initial ssh access. 
+# check_bigip_username    = "root"
+check_bigip_password      = "iNitialSTROnGPaZZwrD"
